@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>simbot.example</groupId>
-    <artifactId>simbot-mirai-springboot-starter-demo</artifactId>
+    <artifactId>QQRobot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
@@ -21,6 +21,10 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <java.version>1.8</java.version>
+        <httpclient.version>4.5.10</httpclient.version>
+        <jsoup.version>1.13.1</jsoup.version>
+        <lombok.version>1.18.12</lombok.version>
+        <kotlin.version>1.4.30</kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -49,6 +53,26 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -56,8 +80,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.orspced.QQRobotApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>

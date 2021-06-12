@@ -1,10 +1,12 @@
+spring:
+  profiles:
+    include:
+      account
+
 logging:
   level:
     love:
       forte:
         simbot: debug
 
-simbot:
-  core:
-    bots: # 你的bot的 账号:密码
-
+image-upload-retry: 3

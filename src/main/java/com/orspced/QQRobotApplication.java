@@ -1,4 +1,4 @@
-package simbot.example;
+package com.orspced;
 
 import love.forte.simbot.spring.autoconfigure.EnableSimbot;
 import org.springframework.boot.SpringApplication;
@@ -13,9 +13,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @EnableSimbot
 @SpringBootApplication
-public class SimbotExampleApplication {
+public class QQRobotApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SimbotExampleApplication.class, args);
+        SpringApplication.run(QQRobotApplication.class, args);
     }
 
 }
