@@ -1,4 +1,4 @@
-package com.orspced.entity;
+package com.velvetalon.entity;
 
 import lombok.Data;
 

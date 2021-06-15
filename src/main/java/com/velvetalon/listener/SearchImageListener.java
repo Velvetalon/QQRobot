@@ -1,8 +1,8 @@
-package com.orspced.listener;
+package com.velvetalon.listener;
 
 import catcode.Neko;
-import com.orspced.entity.ImageSearchResult;
-import com.orspced.service.SearchImageUtil;
+import com.velvetalon.entity.ImageSearchResult;
+import com.velvetalon.service.impl.SearchImageService;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContent;
@@ -52,7 +52,7 @@ public class SearchImageListener {
         for (Neko cat : cats) {
             if (cat.getType().equals("image")) {
                 String url = cat.get("url");
-                List<ImageSearchResult> results = SearchImageUtil.search(url);
+                List<ImageSearchResult> results = SearchImageService.search(url);
                 MessageContentBuilder builder = initMessageContentBuilder(groupMsg, results.isEmpty());
                 int retry = 0;
                 while (true) {

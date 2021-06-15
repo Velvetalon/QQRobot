@@ -1,4 +1,4 @@
-package com.orspced;
+package com.velvetalon;
 
 import love.forte.simbot.spring.autoconfigure.EnableSimbot;
 import org.springframework.boot.SpringApplication;
@@ -17,5 +17,4 @@ public class QQRobotApplication {
     public static void main(String[] args) {
         SpringApplication.run(QQRobotApplication.class, args);
     }
-
 }

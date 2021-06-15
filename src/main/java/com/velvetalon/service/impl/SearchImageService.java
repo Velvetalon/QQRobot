@@ -1,7 +1,7 @@
-package com.orspced.service;
+package com.velvetalon.service.impl;
 
-import com.orspced.entity.ImageSearchResult;
-import com.orspced.utils.HttpSendUtil;
+import com.velvetalon.entity.ImageSearchResult;
+import com.velvetalon.utils.HttpSendUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,8 +21,8 @@ import java.util.List;
  * <p>
  * 2021/6/10 9:45 : 创建文件
  */
-public class SearchImageUtil {
-    private static Logger logger = LoggerFactory.getLogger(SearchImageUtil.class);
+public class SearchImageService {
+    private static Logger logger = LoggerFactory.getLogger(SearchImageService.class);
 
     private final static String IMAGE_SEARCH_API = "https://saucenao.com/search.php";
 

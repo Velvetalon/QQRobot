@@ -1,4 +1,4 @@
-package com.orspced.utils;
+package com.velvetalon.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpResponse;
