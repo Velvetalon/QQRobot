@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @describe: 自动回复方法。
- * @author: whc
+ * @author: Velvetalon
  * HISTORY:
  * <p>
  * 2021/6/15 9:28 : 创建文件

@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * @describe: 自动回复实体类
- * @author: whc
+ * @author: Velvetalon
  * HISTORY:
  * <p>
  * 2021/6/15 9:47 : 创建文件

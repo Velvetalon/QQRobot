@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 /**
  * @describe: 正则表达式工具类
- * @author: whc
+ * @author: Velvetalon
  * HISTORY:
  * <p>
  * 2021/6/15 11:23 : 创建文件

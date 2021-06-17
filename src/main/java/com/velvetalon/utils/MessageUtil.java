@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @describe:
- * @author: whc
+ * @author: Velvetalon
  * HISTORY:
  * <p>
  * 2021/6/15 11:52 : 创建文件
@@ -40,7 +40,9 @@ public class MessageUtil {
         if (at) {
             builder.at(groupMsg.getAccountInfo());
         }
-        builder.text(msg);
+        if(StringUtil.hasValue(msg)){
+            builder.text(msg);
+        }
         if(sender != null){
             sender.SENDER.sendGroupMsg(groupMsg,builder.build());
         }
