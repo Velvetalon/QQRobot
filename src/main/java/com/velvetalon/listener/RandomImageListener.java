@@ -3,6 +3,7 @@ package com.velvetalon.listener;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.sun.deploy.ui.ImageLoader;
 import com.velvetalon.component.HttpProxyManager;
 import com.velvetalon.component.PixivRequestManager;
 import com.velvetalon.entity.PixivImageEntity;
@@ -23,9 +24,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -61,7 +64,10 @@ public class RandomImageListener {
     @Value("${group-delay}")
     private Long groupDelay;
 
-    private LoadingCache<String, Object> cache;
+    @Value("${image-download-retry}")
+    private Long imageDownloadRetry;
+
+    private Map<String, Long> cache = new HashMap<>();
 
     @OnGroup
     @Filter(value = "#来点", matchType = MatchType.STARTS_WITH)
@@ -99,28 +105,36 @@ public class RandomImageListener {
 
         for (PixivImageEntity entity : result) {
             String cacheName = UUID.randomUUID() + ".jpg";
-            String imageLocal;
+            String imageLocal = null;
             List<String> imageCacheList;
-            try {
-                // 在启用了source-image选项后，将会发送原图
-                imageLocal = HttpUtil.download(sourceImage ? entity.getSourceUrl() : entity.getPreviewUrl(),
-                        HttpProxyManager.getHttpProxy(),
-                        header,
-                        cacheName, imageCache);
+            // 在启用了source-image选项后，将会发送原图
+            for (int i = 0; i < imageDownloadRetry; i++) {
+                try {
 
-                if (r18) {
-                    imageCacheList = ImageUtil.splitImage(imageLocal, imageCache, splitNumber);
-                } else {
-                    imageCacheList = new ArrayList<>();
-                    imageCacheList.add(imageLocal);
+                    imageLocal = HttpUtil.download(sourceImage ? entity.getSourceUrl() : entity.getPreviewUrl(),
+                            HttpProxyManager.getHttpProxy(),
+                            header,
+                            cacheName, imageCache);
+                    ImageUtil.checkCompleteImageWithException(imageLocal);
+                } catch (Exception e) {
+                    logger.error("下载文件出现异常，信息如下：");
+                    logger.error(e.getMessage());
+                    logger.error(Arrays.toString(e.getStackTrace()));
+                    continue;
                 }
-            } catch (Exception e) {
-                //下载失败暂时不处理
-                logger.error("下载图片出现异常，信息如下：");
-                logger.error(Arrays.toString(e.getStackTrace()));
+
+            }
+            if (!ImageUtil.isCompleteImage(imageLocal)) {
                 continue;
             }
 
+            if (r18) {
+                String confuseFile = ImageUtil.confuse(imageLocal, imageCache);
+                imageCacheList = ImageUtil.splitImage(confuseFile, imageCache, splitNumber);
+            } else {
+                imageCacheList = new ArrayList<>();
+                imageCacheList.add(imageLocal);
+            }
 
             builder = MessageUtil.builder(groupMsg, null, false);
             builder
@@ -138,7 +152,7 @@ public class RandomImageListener {
                     sender.SENDER.sendGroupMsg(groupMsg, builder.build());
                     break;
                 } catch (Exception e) {
-                    logger.error("随机图片出现异常，信息如下：");
+                    logger.error("上传图片出现异常，信息如下：");
                     logger.error(Arrays.toString(e.getStackTrace()));
                     if (retry++ < retryLimit) {
                         continue;
@@ -153,23 +167,9 @@ public class RandomImageListener {
         MessageUtil.builder(groupMsg, "你要的图找来啦！一共给你发了" + result.size() + "张图喔！", true, sender);
     }
 
-    @PostConstruct
-    private void initCache(){
-        cache = CacheBuilder.newBuilder().
-                initialCapacity(10).// 缓存容器的初始容量
-                maximumSize(10000).// 缓存容器最大缓存容量
-                expireAfterAccess(groupDelay, TimeUnit.SECONDS).  // 当缓存想在指定的时间段内没有被读或写就会被回收
-                build(new CacheLoader<String, Object>() {
-            @Override
-            public String load( String key ){
-                return null;
-            }
-        });
-    }
-
     private boolean checkDelay( String groupCode ){
-        if (cache.getIfPresent(groupCode) == null) {
-            cache.put(groupCode,0);
+        if (cache.get(groupCode) == null || System.currentTimeMillis() - cache.get(groupCode) > groupDelay * 1000) {
+            cache.put(groupCode, System.currentTimeMillis());
             return true;
         }
         return false;

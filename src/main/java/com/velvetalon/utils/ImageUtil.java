@@ -3,19 +3,12 @@ package com.velvetalon.utils;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -145,10 +138,10 @@ public class ImageUtil {
     }
 
 
-    private static boolean cropImage( InputStream inputStream, int x, int y, int w, int h, String sufix, File file ) throws IOException{
+    private static boolean cropImage( InputStream inputStream, int x, int y, int w, int h, File file ) throws IOException{
         BufferedImage bufferedImage = ImageIO.read(inputStream);
         bufferedImage = bufferedImage.getSubimage(x, y, w, h);
-        boolean write = ImageIO.write(bufferedImage, sufix, file);
+        boolean write = ImageIO.write(bufferedImage, "jpg", file);
         inputStream.close();
         return write;
     }
@@ -170,9 +163,80 @@ public class ImageUtil {
             String fileName = UUID.randomUUID() + ".jpg";
             File file = new File(savePath + "/" + fileName);
             file.createNewFile();
-            cropImage(new FileInputStream(imagePath), x, y, imageWidth, y + height > imageHeight ? imageHeight - y : height, "jpg", file);
+            cropImage(new FileInputStream(imagePath), x, y, imageWidth, y + height > imageHeight ? imageHeight - y : height, file);
             list.add(file.getAbsolutePath());
         }
         return list;
+    }
+
+    @SneakyThrows
+    public static String confuse( String imagePath, String outPath ){
+
+        BufferedImage bufferedImage = ImageIO.read(new File(imagePath));
+
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+
+        Graphics graphics = bufferedImage.getGraphics();// 得到画图对象 --- 画笔
+
+        graphics.setColor(getRandColor(200, 250));
+        Graphics2D g2 = (Graphics2D) graphics;
+        g2.setStroke(new BasicStroke((float) ((width + height) / 2 * 0.05)));
+
+
+        Random random = new Random();
+
+        g2.setColor(getRandColor(160, 200));
+        int x1;
+        int x2;
+        int y1;
+        int y2;
+        for (int i = 0; i < 8; i++) {
+            x1 = random.nextInt(width / 2);
+            x2 = random.nextInt(width / 2) + width / 2 + 1;
+            y1 = random.nextInt(height / 2);
+            y2 = random.nextInt(height / 2) + height / 2 + 1;
+            g2.drawLine(x1, y1, x1 + x2, x2 + y2);
+        }
+
+        g2.dispose();// 释放资源
+
+        String filePath = outPath + "/" + UUID.randomUUID() + ".jpg";
+        File file = new File(filePath);
+
+        ImageIO.write(bufferedImage, "jpg", new FileOutputStream(file));
+        return file.getAbsolutePath();
+    }
+
+    private static Color getRandColor( int fc, int bc ){
+        // 取其随机颜色
+        Random random = new Random();
+        if (fc > 255) {
+            fc = 255;
+        }
+        if (bc > 255) {
+            bc = 255;
+        }
+        int r = fc + random.nextInt(bc - fc);
+        int g = fc + random.nextInt(bc - fc);
+        int b = fc + random.nextInt(bc - fc);
+        return new Color(r, g, b);
+    }
+
+    public static boolean isCompleteImage( String imagePath ){
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(imagePath));
+            int width = bufferedImage.getWidth();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @SneakyThrows
+    public static boolean checkCompleteImageWithException( String imagePath ){
+        BufferedImage bufferedImage = ImageIO.read(new File(imagePath));
+        int width = bufferedImage.getWidth();
+        return true;
     }
 }

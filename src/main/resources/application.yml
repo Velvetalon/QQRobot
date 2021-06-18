@@ -2,7 +2,31 @@ spring:
   profiles:
     include:
       account
-
+simbot:
+  component:
+    mirai:
+      # mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒。
+      heartbeat-period-millis: 15000
+      # 每次心跳时等待结果的时间.一旦心跳超时, 整个网络服务将会重启 (将消耗约 1s). 除正在进行的任务 (如图片上传) 会被中断外, 事件和插件均不受影响.
+      heartbeat-timeout-millis: 1000
+      # 心跳失败后的第一次重连前的等待时间.
+      first-reconnect-delay-millis: 1000
+      # 重连失败后, 继续尝试的每次等待时间
+      reconnect-period-millis: 1000
+      # 最多尝试多少次重连
+      reconnection-retry-times: 2147483647
+      # 使用协议类型。注，此值为枚举类 net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol 的元素值，
+      # 可选值为：ANDROID_PHONE、ANDROID_PAD、ANDROID_WATCH
+      protocol: ANDROID_WATCH
+      # mirai提供的配置：Highway 通道上传图片, 语音, 文件等资源时的协程数量.
+      highway-upload-coroutine-count: 32
+      dispatcher:
+        # mirai组件中，对事件进行调度的线程池参数：最大线程数。
+        core-pool-size: 8
+        # mirai组件中，对事件进行调度的线程池参数：最大线程数。
+        maximum-pool-size: 16
+        # mirai组件中，对事件进行调度的线程池参数：线程存活时间（毫秒）
+        keep-alive-time: 3000
 logging:
   level:
     love:
@@ -22,10 +46,12 @@ split-number: 3
 source-image: true
 # 群冷却。单位：秒
 group-delay: 20
+# 下载图片重试次数
+image-download-retry: 3
 
 # 代理信息
 http-proxy:
   host: 127.0.0.1
   port: 1080
   protocol: http
-  enable: false
+  enable: true
