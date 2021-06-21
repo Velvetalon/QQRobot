@@ -10,10 +10,21 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +51,20 @@ public class HttpUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
     static{
-        httpClient = HttpClientBuilder.create().build();
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(20000)
+                .setConnectTimeout(20000)
+                .setConnectionRequestTimeout(20000).build();
+        httpClient = HttpClients.custom().setDefaultRequestConfig(config)
+                .setMaxConnTotal(1000)
+                .setMaxConnPerRoute(1000).build();
     }
 
-    public static String download( String urlString,HttpHost httpProxy,Map<String,String> header, String filename, String savePath ) throws Exception{
+    public static String download( String urlString,
+                                   HttpHost httpProxy,
+                                   Map<String, String> header,
+                                   String filename,
+                                   String savePath ) throws Exception{
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(urlString);
         if (httpProxy != null) {
@@ -57,12 +78,16 @@ public class HttpUtil {
         }
 
         HttpResponse response = client.execute(httpGet);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode != 200 && statusCode != 302) {
+            return null;
+        }
 
         HttpEntity entity = response.getEntity();
         InputStream is = entity.getContent();
 
 
-        File file = new File(savePath+"/"+filename);
+        File file = new File(savePath + "/" + filename);
         file.getParentFile().mkdirs();
         FileOutputStream fileout = new FileOutputStream(file);
         /**
@@ -81,11 +106,21 @@ public class HttpUtil {
         return file.getAbsolutePath();
     }
 
+    /**
+     * 当给与handler时，方法变为异步执行
+     *
+     * @param url
+     * @param queryString
+     * @param header
+     * @param httpProxy
+     * @param handler
+     * @return
+     */
     @SneakyThrows
-    public static void get( String url, Map<String, String> queryString,
-                            Map<String, String> header,
-                            HttpHost httpProxy,
-                            ResponseHandler handler ){
+    public static HttpResponse get( String url, Map<String, String> queryString,
+                                    Map<String, String> header,
+                                    HttpHost httpProxy,
+                                    ResponseHandler handler ){
 
         if (!url.endsWith("?")) {
             url += "?";
@@ -116,6 +151,11 @@ public class HttpUtil {
             httpGet.setConfig(requestConfig);
             logger.info("已设置代理");
         }
-        httpClient.execute(httpGet, handler);
+        if (handler == null) {
+            return httpClient.execute(httpGet);
+        } else {
+            httpClient.execute(httpGet, handler);
+            return null;
+        }
     }
 }

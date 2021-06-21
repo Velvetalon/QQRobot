@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.velvetalon.entity.PixivImageEntity;
 import com.velvetalon.utils.HttpUtil;
+import com.velvetalon.utils.StreamUtil;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,18 +29,13 @@ import java.util.*;
  */
 @Component
 public class PixivRequestManager {
-    @Value("${cookie-file}")
-    private String cookieFile;
 
     @Autowired
     private HttpProxyManager httpProxyManager;
 
+    @Autowired
     private CookieManager cookieManager;
 
-    @PostConstruct
-    public void init(){
-        cookieManager = new CookieManager(cookieFile);
-    }
 
     private static final SimpleDateFormat SDF_ENCODE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     private static final SimpleDateFormat SDF_DECODE = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss");
@@ -62,7 +58,7 @@ public class PixivRequestManager {
                 httpProxyManager.getHttpProxy(),
                 httpResponse -> {
                     cookieManager.updateByHeaders(httpResponse.getHeaders("set-cookie"));
-                    JSONObject json = JSON.parseObject(readAll(httpResponse.getEntity().getContent()));
+                    JSONObject json = JSON.parseObject(StreamUtil.readAll(httpResponse.getEntity().getContent()));
 
                     JSONArray data = json.getJSONObject("body").getJSONObject("illustManga").getJSONArray("data");
 
@@ -109,16 +105,7 @@ public class PixivRequestManager {
         return result;
     }
 
-    @SneakyThrows
-    private static String readAll( InputStream is ){
-        byte[] buf = new byte[4096];
-        int length = 0;
-        StringBuilder sb = new StringBuilder();
-        while ((length = is.read(buf)) != -1) {
-            sb.append(new String(buf, 0, length, StandardCharsets.UTF_8));
-        }
-        return sb.toString();
-    }
+
 
     private static String parseUrl( String keyword, boolean r18, int p ) throws UnsupportedEncodingException{
         keyword = URLEncoder.encode(keyword, "UTF-8");

@@ -18,11 +18,11 @@ import java.util.function.Supplier;
 public class AsyncWrapper {
 
     @Async
-    public void async( Supplier supplier){
-        supplier.get();
+    public void async( Runnable supplier){
+        supplier.run();
     }
 
-    public static void submit( Supplier supplier){
+    public static void submit( Runnable supplier){
         SpringContextUtil.getBean(AsyncWrapper.class).async(supplier);
     }
 }

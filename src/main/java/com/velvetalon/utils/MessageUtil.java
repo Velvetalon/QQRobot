@@ -1,5 +1,10 @@
 package com.velvetalon.utils;
 
+import catcode.CatCodeUtil;
+import catcode.CatEncoder;
+import catcode.CatKV;
+import catcode.Cats;
+import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
@@ -44,12 +49,16 @@ public class MessageUtil {
             builder.text(msg);
         }
         if(sender != null){
-            sender.SENDER.sendGroupMsg(groupMsg,builder.build());
+            sender.SENDER.sendGroupMsg(groupMsg, builder.build());
         }
         return builder;
     }
 
     public static MessageContentBuilder builder( GroupMsg groupMsg, String msg, boolean at ){
         return builder(groupMsg,msg,at,null);
+    }
+
+    public static MessageContentBuilder builder(){
+        return messageBuilderFactory.getMessageContentBuilder();
     }
 }

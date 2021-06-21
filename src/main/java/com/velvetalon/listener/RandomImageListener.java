@@ -1,9 +1,5 @@
 package com.velvetalon.listener;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.sun.deploy.ui.ImageLoader;
 import com.velvetalon.component.HttpProxyManager;
 import com.velvetalon.component.PixivRequestManager;
 import com.velvetalon.entity.PixivImageEntity;
@@ -17,19 +13,16 @@ import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.filter.MatchType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.awt.*;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @describe: 随机图片监听器。
@@ -41,13 +34,15 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RandomImageListener {
 
-    private static Logger logger = LoggerFactory.getLogger(RandomImageListener.class);
+    private static Logger logger = LogManager.getLogger(RandomImageListener.class);
 
     @Autowired
     private PixivRequestManager pixivRequestManager;
 
     @Autowired
     private HttpProxyManager HttpProxyManager;
+
+    private ReentrantLock lock = new ReentrantLock();
 
     @Value("${image-upload-retry}")
     private Integer retryLimit;
@@ -72,10 +67,10 @@ public class RandomImageListener {
     @OnGroup
     @Filter(value = "#来点", matchType = MatchType.STARTS_WITH)
     public void func1( GroupMsg groupMsg, MsgSender sender ){
-        if (!checkDelay(groupMsg.getGroupInfo().getGroupCode())) {
-            MessageUtil.builder(groupMsg, "CD还没转好！再等等啦！", true, sender);
+        if (!checkDelay(groupMsg.getGroupInfo().getGroupCode()) ) {
             return;
         }
+
 
         String msg = groupMsg.getMsg().trim();
         boolean r18 = msg.endsWith("色图");
@@ -85,6 +80,8 @@ public class RandomImageListener {
             MessageUtil.builder(groupMsg, "想看什么图的话，可以告诉我！没有图想看的话就不要骚扰人家了啦！", true, sender);
             return;
         }
+
+        MessageUtil.builder(groupMsg, String.format("我要去给你找%s的图片啦！先消失一会儿~", keyword, groupDelay), true, sender);
 
         List<PixivImageEntity> result;
         try {
@@ -138,7 +135,8 @@ public class RandomImageListener {
 
             builder = MessageUtil.builder(groupMsg, null, false);
             builder
-                    .text("标题：" + entity.getTitle() + "\n");
+                    .text("标题：" + entity.getTitle() + "\n")
+                    .text("Pid：" + entity.getId() + "\n");
             for (String cache : imageCacheList) {
                 builder.imageLocal(cache).text("\n");
             }
@@ -149,6 +147,7 @@ public class RandomImageListener {
             int retry = 0;
             while (true) {
                 try {
+                    Thread.sleep(2000);
                     sender.SENDER.sendGroupMsg(groupMsg, builder.build());
                     break;
                 } catch (Exception e) {

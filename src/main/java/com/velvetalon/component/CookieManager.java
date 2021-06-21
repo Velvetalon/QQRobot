@@ -2,7 +2,11 @@ package com.velvetalon.component;
 
 import lombok.SneakyThrows;
 import org.apache.http.Header;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,22 +27,20 @@ import java.util.function.Supplier;
  * <p>
  * 2021/6/16 11:31 : 创建文件
  */
+@Component
 public class CookieManager {
     private Map<String, String> cookieMap;
 
-    private String cookieFilePath;
+    public CookieManager(){}
 
-    public CookieManager( String cookies, String cookieFilePath ){
-        this.cookieMap = new HashMap<>();
-        this.cookieFilePath = cookieFilePath;
-        updateAll(cookies);
-    }
+    @Value("${cookie-file}")
+    private String cookieFile;
 
-    public CookieManager( String cookieFilePath ){
+    @PostConstruct
+    public void init(){
         this.cookieMap = new HashMap<>();
-        this.cookieFilePath = cookieFilePath;
-        if (new File(cookieFilePath).exists()){
-            updateAll(readFile(new File(cookieFilePath)));
+        if (new File(cookieFile).exists()){
+            updateAll(readFile(new File(cookieFile)));
         }
     }
 
@@ -96,11 +98,11 @@ public class CookieManager {
     @SneakyThrows
     private synchronized void syncFile(){
         CookieManager _this = this;
-        AsyncWrapper.submit(new Supplier() {
-            @SneakyThrows
+        AsyncWrapper.submit(new Runnable() {
             @Override
-            public Object get(){
-                File file = new File(cookieFilePath);
+            @SneakyThrows
+            public void run(){
+                File file = new File(cookieFile);
                 if (file.exists()) {
                     file.delete();
                     file.createNewFile();
@@ -110,7 +112,6 @@ public class CookieManager {
                 ByteBuffer src = StandardCharsets.UTF_8.encode(_this.toString());
                 while (channel.write(src) != 0) {
                 }
-                return null;
             }
         });
     }

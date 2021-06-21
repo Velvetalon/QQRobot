@@ -3,6 +3,7 @@ package com.velvetalon;
 import love.forte.simbot.spring.autoconfigure.EnableSimbot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * 启动类。
@@ -13,8 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @EnableSimbot
 @SpringBootApplication
+@EnableAsync
 public class QQRobotApplication {
-    public static void main(String[] args) {
+    public static void main( String[] args ){
         SpringApplication.run(QQRobotApplication.class, args);
     }
 }

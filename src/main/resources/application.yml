@@ -1,4 +1,8 @@
 spring:
+  task:
+    execution:
+      pool:
+        core-size: 65535
   profiles:
     include:
       account
@@ -17,7 +21,7 @@ simbot:
       reconnection-retry-times: 2147483647
       # 使用协议类型。注，此值为枚举类 net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol 的元素值，
       # 可选值为：ANDROID_PHONE、ANDROID_PAD、ANDROID_WATCH
-      protocol: ANDROID_WATCH
+      protocol: ANDROID_PHONE
       # mirai提供的配置：Highway 通道上传图片, 语音, 文件等资源时的协程数量.
       highway-upload-coroutine-count: 32
       dispatcher:
@@ -43,15 +47,18 @@ cookie-file: pixiv_cookie.ini
 # 反屏蔽时分隔图片的份数
 split-number: 3
 # 是否发送原图
-source-image: true
+source-image: false
 # 群冷却。单位：秒
-group-delay: 20
+group-delay: 30
 # 下载图片重试次数
 image-download-retry: 3
+
+# 发送私聊图片工作线程数量
+private-image-sender: 4
 
 # 代理信息
 http-proxy:
   host: 127.0.0.1
   port: 1080
   protocol: http
-  enable: true
+  enable: false

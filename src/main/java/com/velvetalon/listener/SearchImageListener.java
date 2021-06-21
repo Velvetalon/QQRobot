@@ -11,8 +11,8 @@ import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.filter.MatchType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 public class SearchImageListener {
 
-    private static Logger logger = LoggerFactory.getLogger(SearchImageListener.class);
+    private static Logger logger = LogManager.getLogger(SearchImageListener.class);
 
     /**
      * 注入得到一个消息构建器工厂。

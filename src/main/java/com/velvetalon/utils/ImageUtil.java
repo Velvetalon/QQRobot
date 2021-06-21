@@ -191,12 +191,12 @@ public class ImageUtil {
         int x2;
         int y1;
         int y2;
-        for (int i = 0; i < 8; i++) {
-            x1 = random.nextInt(width / 2);
-            x2 = random.nextInt(width / 2) + width / 2 + 1;
+        for (int i = 0; i < 15; i++) {
+            x1 = random.nextInt(width);
             y1 = random.nextInt(height / 2);
+            x2 = random.nextInt(width);
             y2 = random.nextInt(height / 2) + height / 2 + 1;
-            g2.drawLine(x1, y1, x1 + x2, x2 + y2);
+            g2.drawLine(x1, y1, x2, y2);
         }
 
         g2.dispose();// 释放资源

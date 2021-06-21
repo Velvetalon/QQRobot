@@ -1,0 +1,28 @@
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </Console>
+        <File name="all" fileName="/root/bin/log/QQRobot/all/all.log" append="true">
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </File>
+        <File name="error" fileName="/root/bin/log/QQRobot/error/error.log" append="true">
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </File>
+        <File name="info" fileName="/root/bin/log/QQRobot/info/info.log" append="true">
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </File>
+        <File name="debug" fileName="/root/bin/log/QQRobot/debug/debug.log" append="true">
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="All">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="all" level="all"/>
+            <AppenderRef ref="error" level="error"/>
+            <AppenderRef ref="info" level="info"/>
+            <AppenderRef ref="debug" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>
