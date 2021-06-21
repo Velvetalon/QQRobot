@@ -33,6 +33,9 @@
         username: username
         password: password
         driver-class-name: com.mysql.cj.jdbc.Driver
+    email:
+      username: email@email.com
+      auth-code: auth-code
     ```
  3. 在你希望部署的地方运行她。Done！
 
