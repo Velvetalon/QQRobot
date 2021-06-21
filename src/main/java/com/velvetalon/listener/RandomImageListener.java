@@ -67,7 +67,7 @@ public class RandomImageListener {
     @OnGroup
     @Filter(value = "#来点", matchType = MatchType.STARTS_WITH)
     public void func1( GroupMsg groupMsg, MsgSender sender ){
-        if (!checkDelay(groupMsg.getGroupInfo().getGroupCode()) ) {
+        if (!checkDelay(groupMsg.getGroupInfo().getGroupCode())) {
             return;
         }
 
@@ -100,10 +100,12 @@ public class RandomImageListener {
         Map<String, String> header = new HashMap<>();
         header.put("Referer", "https://www.pixiv.net/");
 
+        builder = MessageUtil.builder(groupMsg, null, false);
+        List<String> imageCacheList = new ArrayList<>();
+
         for (PixivImageEntity entity : result) {
             String cacheName = UUID.randomUUID() + ".jpg";
             String imageLocal = null;
-            List<String> imageCacheList;
             // 在启用了source-image选项后，将会发送原图
             for (int i = 0; i < imageDownloadRetry; i++) {
                 try {
@@ -133,7 +135,6 @@ public class RandomImageListener {
                 imageCacheList.add(imageLocal);
             }
 
-            builder = MessageUtil.builder(groupMsg, null, false);
             builder
                     .text("标题：" + entity.getTitle() + "\n")
                     .text("Pid：" + entity.getId() + "\n");
@@ -143,27 +144,27 @@ public class RandomImageListener {
 
             builder
                     .text("作者：" + entity.getMember() + "\n")
-                    .text("Url：" + entity.getUrl());
-            int retry = 0;
-            while (true) {
-                try {
-                    Thread.sleep(2000);
-                    sender.SENDER.sendGroupMsg(groupMsg, builder.build());
-                    break;
-                } catch (Exception e) {
-                    logger.error("上传图片出现异常，信息如下：");
-                    logger.error(Arrays.toString(e.getStackTrace()));
-                    if (retry++ < retryLimit) {
-                        continue;
-                    }
-                    break;
+                    .text("Url：" + entity.getUrl()+"\n\n");
+        }
+        builder.text("你要的图找来啦！一共给你发了" + result.size() + "张图喔！");
+        int retry = 0;
+        while (true) {
+            try {
+                Thread.sleep(2000);
+                sender.SENDER.sendGroupMsg(groupMsg, builder.build());
+                break;
+            } catch (Exception e) {
+                logger.error("上传图片出现异常，信息如下：");
+                logger.error(Arrays.toString(e.getStackTrace()));
+                if (retry++ < retryLimit) {
+                    continue;
                 }
-            }
-            for (String cache : imageCacheList) {
-                new File(cache).deleteOnExit();
+                break;
             }
         }
-        MessageUtil.builder(groupMsg, "你要的图找来啦！一共给你发了" + result.size() + "张图喔！", true, sender);
+        for (String cache : imageCacheList) {
+            new File(cache).deleteOnExit();
+        }
     }
 
     private boolean checkDelay( String groupCode ){

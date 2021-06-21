@@ -148,6 +148,12 @@ public class ImageUtil {
 
     @SneakyThrows
     public static List<String> splitImage( String imagePath, String savePath, int splitCount ){
+        List<String> list = new ArrayList<>();
+        if (splitCount <= 1) {
+            list.add(imagePath);
+            return list;
+        }
+
         BufferedImage bufferedImage = ImageIO.read(new File(imagePath));
         int imageWidth = bufferedImage.getWidth(null);
         int imageHeight = bufferedImage.getHeight(null);
@@ -157,7 +163,6 @@ public class ImageUtil {
 
         int height = imageHeight / splitCount + 1;
 
-        List<String> list = new ArrayList<>();
 
         for (; y < imageHeight; y += height) {
             String fileName = UUID.randomUUID() + ".jpg";

@@ -45,7 +45,7 @@ image-cache: /root/bin/imageCache
 # pixiv cookie。将会自动更新。
 cookie-file: pixiv_cookie.ini
 # 反屏蔽时分隔图片的份数
-split-number: 3
+split-number: 1
 # 是否发送原图
 source-image: false
 # 群冷却。单位：秒
@@ -61,4 +61,4 @@ http-proxy:
   host: 127.0.0.1
   port: 1080
   protocol: http
-  enable: false
+  enable: true

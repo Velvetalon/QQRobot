@@ -9,6 +9,7 @@ import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
+import love.forte.simbot.api.sender.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,5 +61,14 @@ public class MessageUtil {
 
     public static MessageContentBuilder builder(){
         return messageBuilderFactory.getMessageContentBuilder();
+    }
+
+    public static boolean sendPrivateMsg( Sender sender,String accountCode,String msg ){
+        try{
+            sender.sendPrivateMsg(accountCode, msg);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }

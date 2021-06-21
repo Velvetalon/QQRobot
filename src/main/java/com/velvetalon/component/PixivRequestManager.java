@@ -69,9 +69,11 @@ public class PixivRequestManager {
                     }
 
                     // 随机3-5张图
-                    int count = new Random().nextInt(2) + 3;
+//                    int count = new Random().nextInt(2) + 3;
+                    // 固定3张图
+                    int count = 3;
                     Set<Integer> set = new HashSet<>();
-                    while (set.size() < count) {
+                    while (set.size() < count && set.size() < data.size()) {
                         set.add(new Random().nextInt(size));
                     }
 
@@ -104,7 +106,6 @@ public class PixivRequestManager {
         }
         return result;
     }
-
 
 
     private static String parseUrl( String keyword, boolean r18, int p ) throws UnsupportedEncodingException{
