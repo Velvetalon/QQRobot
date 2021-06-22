@@ -66,7 +66,7 @@ public class ImagePrivateSender implements ApplicationListener<ContextRefreshedE
         }
     }
 
-    public static void addTask(ImageSenderTask task){
+    public static void addTask( ImageSenderTask task ){
         TASK_QUEUE.add(task);
     }
 
@@ -83,12 +83,12 @@ public class ImagePrivateSender implements ApplicationListener<ContextRefreshedE
 
             String originalUrl = getOriginalUrl(task.getPixivId());
             if (originalUrl == null) {
-                manager.getDefaultBot().getSender().SENDER.sendPrivateMsg(
+                MessageUtil.sendPrivateMsg(manager.getDefaultBot().getSender().SENDER,
                         task.getAccountCode(),
                         String.format("%s没能找到任何图片哦！", task.getPixivId()));
             }
 
-            manager.getDefaultBot().getSender().SENDER.sendPrivateMsg(
+            MessageUtil.sendPrivateMsg(manager.getDefaultBot().getSender().SENDER,
                     task.getAccountCode(),
                     "正在为你下载图片哦！");
 
@@ -117,10 +117,10 @@ public class ImagePrivateSender implements ApplicationListener<ContextRefreshedE
                 }
             }
 
-            if(list.isEmpty()){
-                manager.getDefaultBot().getSender().SENDER.sendPrivateMsg(
+            if (list.isEmpty()) {
+                MessageUtil.sendPrivateMsg(manager.getDefaultBot().getSender().SENDER,
                         task.getAccountCode(),
-                        String.format("%s下载全部失败啦！也许你可以向主人投诉以帮助我变得更好×", task.getPixivId()));
+                        String.format("%s下载全部失败啦！也许你可以向主人投诉以帮助我变得更好×",task.getPixivId()));
                 return;
             }
 
@@ -131,7 +131,7 @@ public class ImagePrivateSender implements ApplicationListener<ContextRefreshedE
                     "你的图片~！",
                     list
             );
-            manager.getDefaultBot().getSender().SENDER.sendPrivateMsg(
+            MessageUtil.sendPrivateMsg(manager.getDefaultBot().getSender().SENDER,
                     task.getAccountCode(),
                     "您订阅的图片已经发送到你的邮箱！请注意查收啦！没找到的话说不定在垃圾箱里哦？");
         }
