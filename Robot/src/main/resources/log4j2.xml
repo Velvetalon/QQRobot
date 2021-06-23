@@ -1,0 +1,61 @@
+<Configuration status="WARN">
+    <properties>
+        <Property name="log_path">/root/bin/log/QQRobot/Robot/</Property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+        </Console>
+        <RollingFile name="RollingFileDebug" fileName="${log_path}/debug.log"
+                     filePattern="${log_path}debug/debug-%d{yyyy-MM-dd HH:mm}-%i.log">
+            <ThresholdFilter level="DEBUG"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="RollingFileInfo" fileName="${log_path}/info.log"
+                     filePattern="${log_path}info/info-%d{yyyy-MM-dd HH:mm}-%i.log">
+            <ThresholdFilter level="INFO"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <!-- 限制每天文件个数 -->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="RollingFileWarn" fileName="${log_path}/warn.log"
+                     filePattern="${log_path}warn/warn-%d{yyyy-MM-dd HH:mm}-%i.log">
+            <ThresholdFilter level="WARN"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="RollingFileError" fileName="${log_path}/error.log"
+                     filePattern="${log_path}error/error-%d{yyyy-MM-dd HH:mm}-%i.log">
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout pattern="%-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="All">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="RollingFileDebug" level="DEBUG"/>
+            <AppenderRef ref="RollingFileInfo" level="INFO"/>
+            <AppenderRef ref="RollingFileWarn" level="WARN"/>
+            <AppenderRef ref="RollingFileError" level="ERROR"/>
+        </Root>
+    </Loggers>
+</Configuration>

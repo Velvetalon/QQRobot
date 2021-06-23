@@ -1,0 +1,20 @@
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 65535
+  profiles:
+    include:
+      account
+
+#重启命令
+restart-command: 大笨蛋起床啦
+#监听命令
+monitor-command: 大笨蛋你在吗
+#监听命令响应
+monitor-resp: 我在我在！
+#等待响应时间（单位：秒）
+monitor-timeout: 5
+
+#监听端口
+monitor-port: 6655
