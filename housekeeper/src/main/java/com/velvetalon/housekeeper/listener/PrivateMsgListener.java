@@ -2,6 +2,7 @@ package com.velvetalon.housekeeper.listener;
 
 import com.velvetalon.housekeeper.compoment.OnlineStatus;
 import com.velvetalon.housekeeper.task.RobotRunningStatusDetection;
+import lombok.SneakyThrows;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnPrivate;
@@ -39,6 +40,7 @@ public class PrivateMsgListener {
     @Autowired
     private RobotRunningStatusDetection robotRunningStatusDetection;
 
+    @SneakyThrows
     @OnGroup
     @Filter(value = "#看看大笨蛋在吗", matchType = MatchType.EQUALS)
     public void func( GroupMsg groupMsg, MsgSender sender ){
@@ -50,13 +52,16 @@ public class PrivateMsgListener {
         switch (status) {
             case ONLINE:
                 sender.SENDER.sendGroupMsg(groupMsg, "大笨蛋在线哦！");
+                sender.SENDER.sendGroupMsg(groupMsg, "#还在吗");
                 logger.info("目标在线。目标：" + monitorTarget);
                 break;
             case OFFLINE_RESTART_SUCCESS:
                 sender.SENDER.sendGroupMsg(groupMsg, "大笨蛋已经起床啦！");
+                Thread.sleep(5000);
+                sender.SENDER.sendGroupMsg(groupMsg, "#还在吗");
                 logger.info("重启成功，目标：" + monitorTarget);
                 break;
-            case OFFLINE_RESTART_FAIL:
+            case OFFLINE_RESTART_FAIL:  
                 sender.SENDER.sendGroupMsg(groupMsg, "大笨蛋生病了！快去找主人！");
                 logger.error("重启失败，目标：" + monitorTarget);
                 break;

@@ -6,6 +6,9 @@ spring:
   profiles:
     include:
       account
+  datasource:
+    hikari:
+      max-lifetime: 500000
 simbot:
   component:
     mirai:

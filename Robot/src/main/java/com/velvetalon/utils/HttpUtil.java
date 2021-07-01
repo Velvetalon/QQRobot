@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,11 +44,9 @@ public class HttpUtil {
                 .setMaxConnPerRoute(1000).build();
     }
 
-    public static String download( String urlString,
-                                   HttpHost httpProxy,
-                                   Map<String, String> header,
-                                   String filename,
-                                   String savePath ) throws Exception{
+    public static InputStream getInputStream( String urlString,
+                                              HttpHost httpProxy,
+                                              Map<String, String> header ) throws IOException{
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(urlString);
         if (httpProxy != null) {
@@ -68,6 +67,15 @@ public class HttpUtil {
 
         HttpEntity entity = response.getEntity();
         InputStream is = entity.getContent();
+        return is;
+    }
+
+    public static String download( String urlString,
+                                   HttpHost httpProxy,
+                                   Map<String, String> header,
+                                   String filename,
+                                   String savePath ) throws Exception{
+        InputStream is = getInputStream(urlString, httpProxy, header);
 
 
         File file = new File(savePath + "/" + filename);

@@ -40,18 +40,17 @@ public class RunStatusMonitor implements ApplicationListener<ContextRefreshedEve
         while (true) {
             Socket client = serverSocket.accept();
             BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            try {
-                if (restartCommand.equals(br.readLine())) {
+            if (restartCommand.equals(br.readLine())) {
+                try {
                     logger.info("检测到重启指令，服务即将重启。");
                     SpringContextUtil.applicationRestart(QQRobotApplication.class);
                     break;
+                } finally {
+                    br.close();
+                    client.close();
+                    serverSocket.close();
                 }
-            } finally {
-                br.close();
-                client.close();
-                serverSocket.close();
             }
         }
-
     }
 }

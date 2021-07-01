@@ -6,7 +6,7 @@ package com.velvetalon.utils;
  * HISTORY:
  * <p>
  * 2021/6/20 0:32 : 创建文件
- * * copy for https://blog.csdn.net/wzy18210825916/article/details/103368483
+ * * copy from https://blog.csdn.net/wzy18210825916/article/details/103368483
  */
 
 import com.sun.mail.util.MailSSLSocketFactory;

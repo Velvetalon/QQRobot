@@ -17,7 +17,7 @@ import java.util.UUID;
  * HISTORY:
  * <p>
  * 2021/6/16 17:35 : 创建文件
- * * copy for https://blog.csdn.net/coderALEX/article/details/90081223
+ * * copy from https://blog.csdn.net/coderALEX/article/details/90081223
  */
 
 
