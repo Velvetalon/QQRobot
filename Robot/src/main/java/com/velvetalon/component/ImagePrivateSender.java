@@ -114,13 +114,14 @@ public class ImagePrivateSender implements ApplicationListener<ContextRefreshedE
                 } catch (Exception e) {
                     logger.error("下载文件失败，信息如下：");
                     logger.error(e);
+                    logger.error(StringUtil.array2String(e.getStackTrace()));
                 }
             }
 
             if (list.isEmpty()) {
                 MessageUtil.sendPrivateMsg(manager.getDefaultBot().getSender().SENDER,
                         task.getAccountCode(),
-                        String.format("%s下载全部失败啦！也许你可以向主人投诉以帮助我变得更好×",task.getPixivId()));
+                        String.format("%s下载全部失败啦！也许你可以向主人投诉以帮助我变得更好×", task.getPixivId()));
                 return;
             }
 

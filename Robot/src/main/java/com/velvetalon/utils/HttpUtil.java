@@ -49,6 +49,7 @@ public class HttpUtil {
                                               Map<String, String> header ) throws IOException{
         HttpClient client = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(urlString);
+        httpGet.addHeader("Connection", "close");
         if (httpProxy != null) {
             RequestConfig requestConfig = RequestConfig.custom().setProxy(httpProxy).setConnectTimeout(30000).setSocketTimeout(3000).setConnectionRequestTimeout(3000).build();
             httpGet.setConfig(requestConfig);

@@ -4,7 +4,7 @@ import catcode.Neko;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.velvetalon.entity.LongTimeEntity;
 import com.velvetalon.service.LongTimeService;
-import com.velvetalon.utils.*;
+import com.velvetalon.utils.MessageUtil;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContentBuilder;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -107,7 +106,6 @@ public class LongTime {
                 builder.text("\n");
             }
         }
-        int i = 0;
         MessageUtil.sendGroup(sender.SENDER, groupMsg, builder.build(), retryLimit, logger);
     }
 }
