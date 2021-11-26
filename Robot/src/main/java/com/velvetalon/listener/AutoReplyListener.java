@@ -1,6 +1,7 @@
 package com.velvetalon.listener;
 
 import catcode.Neko;
+import com.velvetalon.aspect.annotation.FunctionEnableCheck;
 import com.velvetalon.entity.AutoReplyEntity;
 import com.velvetalon.service.AutoReplyService;
 import com.velvetalon.utils.MessageUtil;
@@ -14,6 +15,7 @@ import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.filter.MatchType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.List;
  * <p>
  * 2021/6/15 9:28 : 创建文件
  */
-@Service
+@Component
 public class AutoReplyListener {
 
     private static final String AUTO_REPLY_PATTERN = "\\[[^\\:]+:{1}[^\\:]+]";
@@ -36,6 +38,7 @@ public class AutoReplyListener {
     private AutoReplyService autoReplyService;
 
     @OnGroup
+    @FunctionEnableCheck("AUTO_REPLY")
     @Filter(value = "#自动回复", matchType = MatchType.STARTS_WITH)
     public void func1( GroupMsg groupMsg, MsgSender sender ){
         String msg = groupMsg.getMsg();
@@ -59,7 +62,8 @@ public class AutoReplyListener {
 
 
     @OnGroup
-    @Filter(atBot = true)
+    @FunctionEnableCheck("AUTO_REPLY")
+    @Filter(atBot = false)
     public void func2( GroupMsg groupMsg, MsgSender sender ){
         MessageContent msgContent = groupMsg.getMsgContent();
         List<Neko> cats = msgContent.getCats();
@@ -68,7 +72,7 @@ public class AutoReplyListener {
                 String text = cat.get("text").trim();
                 AutoReplyEntity reply = autoReplyService.getReply(groupMsg.getGroupInfo().getGroupCode(), text);
                 if(reply != null){
-                    MessageUtil.builder(groupMsg,reply.getReply(),true,sender);
+                    MessageUtil.builder(groupMsg,reply.getReply(),false,sender);
                 }
                 return;
             }

@@ -9,7 +9,9 @@ spring:
   datasource:
     hikari:
       max-lifetime: 500000
-simbot:
+
+  main:
+    allow-bean-definition-overriding: true
   component:
     mirai:
       # mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒。

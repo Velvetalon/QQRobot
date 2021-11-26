@@ -81,13 +81,19 @@ public class MessageUtil {
                 sender.sendGroupMsg(groupMsg, msg);
                 return true;
             } catch (Exception e) {
-                logger.error("发送消息失败，信息如下：");
-                logger.error(e.getMessage());
-                logger.error(StringUtil.array2String(e.getStackTrace()));
+                if (logger != null) {
+                    logger.error("发送消息失败，信息如下：");
+                    logger.error(e.getMessage());
+                    logger.error(StringUtil.array2String(e.getStackTrace()));
+                }
                 if (++i > retry) {
                     return false;
                 }
             }
         }
+    }
+
+    public static boolean sendGroup( Sender sender, GroupMsg groupMsg, String msg, int retry, Logger logger ){
+        return sendGroup(sender, groupMsg, MessageUtil.builder(groupMsg, msg, false).build(), retry, logger);
     }
 }

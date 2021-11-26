@@ -10,6 +10,8 @@ import com.velvetalon.service.LongTimeService;
 import com.velvetalon.utils.HttpUtil;
 import com.velvetalon.utils.Md5Util;
 import com.velvetalon.utils.UUIDUtil;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,17 @@ public class LongTimeServiceImpl extends ServiceImpl<LongTimeMapper, LongTimeEnt
 
     @Override
     public List<LongTimeEntity> randomLong( int bound ){
-        return longTimeMapper.randomLong(bound);
+        begin: while(true){
+            List<LongTimeEntity> longList = longTimeMapper.randomLong(bound);
+            for (LongTimeEntity longTime : longList) {
+                HttpResponse response = HttpUtil.get(longTime.getUrl(), null, null, null, null);
+                if(response == null || response.getStatusLine().toString().contains("404")){
+                    longTimeMapper.deleteById(longTime.getId());
+                    continue begin;
+                }
+            }
+            return longList;
+        }
     }
 
     @Override
