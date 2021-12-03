@@ -2,6 +2,7 @@ package com.velvetalon.listener;
 
 import catcode.Neko;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.velvetalon.aspect.annotation.FunctionEnableCheck;
 import com.velvetalon.entity.LongTimeEntity;
 import com.velvetalon.service.LongTimeService;
 import com.velvetalon.utils.MessageUtil;
@@ -40,6 +41,7 @@ public class LongTime {
     private String imageCache;
 
     @OnGroup
+    @FunctionEnableCheck(value = "LONG_TIME")
     @Filter(value = "#新龙图", matchType = MatchType.STARTS_WITH)
     public void func( GroupMsg groupMsg, MsgSender sender ){
         int i = 0;
@@ -70,6 +72,7 @@ public class LongTime {
     }
 
     @OnGroup
+    @FunctionEnableCheck(value = "LONG_TIME")
     @Filter(value = "#这个不是龙", matchType = MatchType.STARTS_WITH)
     public void func2( GroupMsg groupMsg, MsgSender sender ){
         int count = 0;
@@ -96,6 +99,7 @@ public class LongTime {
     }
 
     @OnGroup
+    @FunctionEnableCheck(value = "LONG_TIME")
     @Filter(value = "#龙time", matchType = MatchType.STARTS_WITH)
     public void func3( GroupMsg groupMsg, MsgSender sender ){
         MessageContentBuilder builder = MessageUtil.builder();

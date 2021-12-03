@@ -15,5 +15,7 @@ import java.lang.annotation.*;
 public @interface FunctionEnableCheck {
     String value();
 
-    boolean ENABLE() default false;
+    boolean enable() default false;
+
+    boolean adminRequired() default false;
 }

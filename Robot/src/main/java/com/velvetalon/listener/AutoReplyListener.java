@@ -14,6 +14,7 @@ import love.forte.simbot.api.message.containers.GroupInfo;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.filter.MatchType;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class AutoReplyListener {
         int i = autoReplyService.saveReplyList(replyList, groupMsg.getGroupInfo().getGroupCode(), groupMsg.getAccountInfo().getAccountCode());
         String resp;
         if (i > 0) {
-            resp = "成功啦！又学会了" + i + "个新回复！快来@我试试吧~";
+            resp = "成功啦！又学会了" + i + "个新回复！快来试试吧~";
         } else {
             resp = "完————全没能学会任何东西呢！快检查一下你是不是写错了什么！";
         }
@@ -68,14 +69,76 @@ public class AutoReplyListener {
         MessageContent msgContent = groupMsg.getMsgContent();
         List<Neko> cats = msgContent.getCats();
         for (Neko cat : cats) {
-            if("text".equals(cat.getType())){
+            if ("text".equals(cat.getType())) {
                 String text = cat.get("text").trim();
-                AutoReplyEntity reply = autoReplyService.getReply(groupMsg.getGroupInfo().getGroupCode(), text);
-                if(reply != null){
-                    MessageUtil.builder(groupMsg,reply.getReply(),false,sender);
+                try {
+                    AutoReplyEntity reply = autoReplyService.getReply(groupMsg.getGroupInfo().getGroupCode(), text);
+                    if (reply != null) {
+                        MessageUtil.builder(groupMsg, reply.getReply(), false, sender);
+                    }
+                }catch (Exception e){
+                    MessageUtil.builder(groupMsg, "检测到回复机制出现异常，请检查参数状态并立即使用以下指令关闭自动回复：#设置 AUTO_REPLY 0", false, sender);
                 }
                 return;
             }
         }
     }
+
+    @OnGroup
+    @FunctionEnableCheck(value = "AUTO_REPLY")
+    @Filter(value = "#删除回复", matchType = MatchType.STARTS_WITH)
+    public void func3( GroupMsg groupMsg, MsgSender sender ){
+        String msg = groupMsg.getMsg();
+        if (msg.split(" ").length < 2) {
+            MessageUtil.builder(groupMsg,
+                    "指令都打歪来你是不是罗志啊", true, sender);
+            return;
+        }
+        int i = autoReplyService.removeReply(msg.replaceFirst("#清空回复 ",""), groupMsg.getGroupInfo().getGroupCode(), groupMsg.getAccountInfo().getAccountCode());
+        String resp;
+        if (i > 0) {
+            resp = "成功啦！移除" + i + "个自动回复！";
+        } else {
+            resp = "完————全没移除任何东西呢！快检查一下你是不是写错了什么！";
+        }
+        MessageUtil.builder(groupMsg, resp, true, sender);
+    }
+
+    @OnGroup
+    @FunctionEnableCheck(value = "AUTO_REPLY", adminRequired = true)
+    @Filter(value = "#清空触发", matchType = MatchType.STARTS_WITH)
+    public void func4( GroupMsg groupMsg, MsgSender sender ){
+        String resp;
+
+        String msg = groupMsg.getMsg();
+        String[] split = msg.split(" ");
+        if (split.length < 2) {
+            resp = "指令都打歪来你到底会不会用啊";
+        } else {
+            int count = autoReplyService.cleanTrigger(msg.replaceFirst("#清空触发 ",""),
+                    groupMsg.getGroupInfo().getGroupCode(),
+                    groupMsg.getAccountInfo().getAccountCode());
+            resp = "一共" + count + "条数据全都清空咯！";
+        }
+        MessageUtil.builder(groupMsg, resp, true, sender);
+    }
+    @OnGroup
+    @FunctionEnableCheck(value = "AUTO_REPLY", adminRequired = true)
+    @Filter(value = "#清空回复", matchType = MatchType.STARTS_WITH)
+    public void func5( GroupMsg groupMsg, MsgSender sender ){
+        String resp;
+
+        String msg = groupMsg.getMsg();
+        String[] split = msg.split(" ");
+        if (split.length < 2) {
+            resp = "指令都打歪来你到底会不会用啊";
+        } else {
+            int count = autoReplyService.cleanReply(msg.replaceFirst("#清空回复 ",""),
+                    groupMsg.getGroupInfo().getGroupCode(),
+                    groupMsg.getAccountInfo().getAccountCode());
+            resp = "一共" + count + "条数据全都清空咯！";
+        }
+        MessageUtil.builder(groupMsg, resp, true, sender);
+    }
+
 }

@@ -15,10 +15,18 @@ import love.forte.simbot.api.sender.MsgSender;
  */
 public interface FunctionConfigService extends IService<FunctionConfig> {
     /**
-     * 设置功能启用
+     * 设置功能状态
+     *
      * @param groupMsg
      * @param sender
-     * @param enable
      */
-    void setFunctionStatus( GroupMsg groupMsg, MsgSender sender, boolean enable );
+    void setFunctionStatus( GroupMsg groupMsg, MsgSender sender );
+
+    /**
+     * 根据群号获取参数值
+     * @param groupCode
+     * @param functionCode
+     * @return
+     */
+    String getFunctionValueByGroupCode(String groupCode,String functionCode);
 }

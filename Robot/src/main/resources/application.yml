@@ -71,9 +71,3 @@ monitor-resp: 我在我在！
 #监听端口
 monitor-port: 6655
 
-# 代理信息
-http-proxy:
-  host: 127.0.0.1
-  port: 1081
-  protocol: http
-  enable: false

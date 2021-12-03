@@ -20,5 +20,5 @@ public class FunctionConfig {
     private String id;
     private String groupNumber;
     private String functionCode;
-    private String enable;
+    private String functionValue;
 }

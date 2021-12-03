@@ -22,8 +22,10 @@ public class AutoReplyEntity {
     private String reply;
     private String groupNumber;
     private Integer enable;
+    private String type;
     private String createdBy;
     private Date createTime;
     private String disabledBy;
     private Date disableTime;
+    private String sourceId;
 }

@@ -2,7 +2,8 @@ package com.velvetalon.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.velvetalon.entity.AutoReplyEntity;
-import com.velvetalon.mapper.AutoReplyMapper;
+import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.sender.MsgSender;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -42,4 +43,38 @@ public interface AutoReplyService extends IService<AutoReplyEntity> {
      * @return
      */
     AutoReplyEntity getReply( String groupCode, String trigger );
+
+    /**
+     * 清空触发词
+     * @param trigger
+     * @return
+     */
+    int cleanTrigger( String trigger, String groupCode, String accountCode );
+
+    /**
+     * 清空回复
+     * @param s
+     * @param groupCode
+     * @param accountCode
+     * @return
+     */
+    int cleanReply( String s, String groupCode, String accountCode );
+
+    /**
+     * 删除自动回复。
+     * @param replaceFirst
+     * @param groupCode
+     * @param accountCode
+     * @return
+     */
+    int removeReply( String replaceFirst, String groupCode, String accountCode );
+
+    /**
+     * 复制词库
+     * @param groupMsg
+     * @param sender
+     * @param target
+     * @param copyAll
+     */
+    void copyThesaurus( GroupMsg groupMsg, MsgSender sender, String target, boolean copyAll );
 }
